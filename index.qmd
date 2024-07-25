@@ -6,19 +6,15 @@ output: html_document
 ---
 
 ```{r}
+#| echo: false
+#| message: false
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
-library(lubridate)
-library(hrbrthemes)
-library(plotly)
-library(patchwork)
-library(viridis)
 ```
 
 ```{r}
 #| echo: false
-#| message: false
 data <- read_csv("data/vazgen.csv")
 main_data <- data |>
   filter(entry_id >= 1331 & entry_id <= 10021)
@@ -39,29 +35,8 @@ main_data |>
 ```
 
 ```{r}
-library(forcats)
-main_data |>
-  drop_na(pm1)
-  ggplot(aes(x = time, y = pm1)) +
-    geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
-    coord_flip() +
-    xlab("") +
-    theme_bw()
-```
-
-```{r}
-main_data |>
-  drop_na(pm1) |>
-  ggplot(aes(x = time, y = pm1)) +
-    geom_area(fill="#69b3a2", alpha=0.5) +
-    geom_line(color="#69b3a2") +
-    ggtitle("Evolution of Bitcoin price") +
-    ylab("bitcoin price ($)") +
-    theme_ipsum()
-```
-
-```{r}
-main_data %>% 
+#| echo: false
+main_data |> 
   mutate(mycolor = ifelse(temperature > 0, "type1", "type2")) |>
   drop_na(temperature) |>
   ggplot(aes(x = time, y = temperature)) +
@@ -72,10 +47,12 @@ main_data %>%
   ylab("Value of Y")
 ```
 
-
 ```{r}
-main_data |>
-  drop_na(humidity, pressure) |>
-  ggplot(aes(x = pressure, y = humidity)) +
-  geom_bar()
+library(ggplot2)
+library(tidyr)
+long_data <- pivot_longer(data, cols = starts_with("pm"), names_to = "pm")
+ggplot(long_data, aes(x = , y = pm, fill = pm)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Bar Plot of Different Variables", x = "Category", y = "Value") +
+  theme_minimal()
 ```
