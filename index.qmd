@@ -1,7 +1,44 @@
 ---
-title: "My First Website"
+title: "final"
+author: "Anna Davtyan"
+date: "2024-07-24"
+output: html_document
 ---
 
 ```{r}
 library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+```
+
+```{r}
+#| echo: false
+#| message: false
+data <- read_csv("data/vazgen.csv")
+main_data <- data |>
+  filter(entry_id >= 1331 & entry_id <= 10021)
+```
+
+```{r}
+#| echo: false
+order <- c("N", "NE", "E", "SE", "S", "SW", "W", "NW")
+main_data |>
+  drop_na(direction, speed) |>
+  mutate(direction = factor(direction, levels = order)) |>
+  ggplot(aes(x = as.factor(direction), fill = direction)) + 
+  geom_bar(width = 1) +
+  coord_polar(start = -0.4) +
+  labs(title = "Wind Rose", x = "Wind Direction", y = "Frequency", fill = "Direction") +
+  theme_minimal()
+
+```
+
+```{r}
+theme_set(theme_bw())
+ggplot(main_data, aes(x = time)) + 
+  geom_line(aes(y = pm1, col = "pm1")) +
+  labs(title = "Time Series of Returns Percentage", 
+       subtitle = "Drawn From Wide Data format", 
+       caption = "Source: Economics", y = "Returns %")
 ```
