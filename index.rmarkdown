@@ -40,8 +40,7 @@ main_data |>
 
 ```{r}
 library(forcats)
-main_data |>
-  drop_na(pm1)
+main_data %>%
   ggplot(aes(x = time, y = pm1)) +
     geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
     coord_flip() +
@@ -72,10 +71,10 @@ main_data %>%
   ylab("Value of Y")
 ```
 
-
 ```{r}
 main_data |>
   drop_na(humidity, pressure) |>
   ggplot(aes(x = pressure, y = humidity)) +
   geom_bar()
 ```
+
