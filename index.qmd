@@ -1,12 +1,13 @@
 ---
-title: "final"
+title: "Home"
 author: "Anna Davtyan"
 date: "2024-07-24"
 output: html_document
+execute: 
+  echo: false
 ---
 
 ```{r}
-#| echo: false
 #| message: false
 library(tidyverse)
 library(dplyr)
@@ -14,14 +15,15 @@ library(ggplot2)
 ```
 
 ```{r}
-#| echo: false
+#| message: false
 data <- read_csv("data/vazgen.csv")
 main_data <- data |>
   filter(entry_id >= 1331 & entry_id <= 10021)
 ```
 
+My main question is to examine weather in Yerevan, in this case particurarly in Nor Nork district in winter.
+
 ```{r}
-#| echo: false
 order <- c("N", "NE", "E", "SE", "S", "SW", "W", "NW")
 main_data |>
   drop_na(direction, speed) |>
@@ -32,27 +34,4 @@ main_data |>
   labs(title = "Wind Rose", x = "Wind Direction", y = "Frequency", fill = "Direction") +
   theme_minimal()
 
-```
-
-```{r}
-#| echo: false
-main_data |> 
-  mutate(mycolor = ifelse(temperature > 0, "type1", "type2")) |>
-  drop_na(temperature) |>
-  ggplot(aes(x = time, y = temperature)) +
-  geom_segment(aes(x = time, xend = time, y = 0, yend = temperature, color = mycolor), linewidth = 0.3, alpha = 0.9) +
-  theme_light() +
-  theme(legend.position = "none", panel.border = element_blank()) +
-  xlab("") +
-  ylab("Value of Y")
-```
-
-```{r}
-library(ggplot2)
-library(tidyr)
-long_data <- pivot_longer(data, cols = starts_with("pm"), names_to = "pm")
-ggplot(long_data, aes(x = , y = pm, fill = pm)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Bar Plot of Different Variables", x = "Category", y = "Value") +
-  theme_minimal()
 ```

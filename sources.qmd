@@ -1,0 +1,15 @@
+---
+title: "Sources"
+editor: visual
+---
+
+Here are the sites and resources I used for my project
+
+Data is from Tumo's Climate Nets.
+
+For graphs I used Chat GPT, and this site
+
+<https://r-graph-gallery.com/ggplot2-package.html>
+
+For analytics I used Google, and this site
+<https://climatenet.am/en/>

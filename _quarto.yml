@@ -2,18 +2,20 @@ project:
   type: website
 
 website:
-  title: "A New Website, second edition"
+  title: "TUMO project"
   navbar:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - href: dataanalysis.qmd
+        text: Data Analysis
+      - href: sources.qmd
+        text: Sources
+      - href: about.qmd
+        text: About
 
 format:
   html:
     theme: cosmo
     css: styles.css
     toc: true
-
-
-

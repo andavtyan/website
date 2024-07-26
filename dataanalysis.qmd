@@ -1,0 +1,126 @@
+---
+title: "Data analysis"
+editor: visual
+execute: 
+  echo: false
+---
+
+```{r}
+#| message: false
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+#| message: false
+data <- read_csv("data/vazgen.csv")
+main_data <- data |>
+  filter(entry_id >= 1331 & entry_id <= 10021)
+```
+
+```{r}
+order <- c("N", "NE", "E", "SE", "S", "SW", "W", "NW")
+main_data |>
+  drop_na(direction, speed) |>
+  mutate(direction = factor(direction, levels = order)) |>
+  ggplot(aes(x = as.factor(direction), fill = direction)) + 
+  geom_bar(width = 1) +
+  coord_polar(start = -0.4) +
+  labs(title = "Wind Rose", x = "Wind Direction", y = "Frequency", fill = "Direction") +
+  theme_minimal()
+
+```
+
+According to this graph, the majority of winds in Yerevan blow from the south (particurarly from south-west), from Ararat through the Ararat Valley.
+
+```{r}
+main_data |> 
+  mutate(mycolor = ifelse(temperature > 0, "type1", "type2")) |>
+  drop_na(temperature) |>
+  ggplot(aes(x = time, y = temperature)) +
+  geom_segment(aes(x = time, xend = time, y = 0, yend = temperature, color = mycolor), linewidth = 0.3, alpha = 0.9) +
+  theme_light() +
+  theme(legend.position = "none", panel.border = element_blank()) +
+  labs(title = "Changes of temperature over time",
+       x = "Time", 
+       y = "Temperature")
+```
+
+According to this graph, the temperature in Yerevan in winter is mostly positive, but within normal limits.
+Here are average temperatures in Yerevan in winter generally for better understanding of this graph
+December 5° / -2°
+January 2° / -5°
+February 5° / -3
+
+```{r}
+dec <- main_data |>
+  filter(entry_id <= 4294)
+jan <- main_data |>
+  filter(entry_id >=4295, entry_id < 7270)
+feb <- main_data |>
+  filter(entry_id >= 7270)
+dec_pm1 <- mean(dec$pm1, na.rm = TRUE)
+dec_pm2_5 <- mean(dec$pm2_5, na.rm = TRUE)
+dec_pm10 <- mean(dec$pm10, na.rm = TRUE)
+jan_pm1 <- mean(jan$pm1, na.rm = TRUE)
+jan_pm2_5 <- mean(jan$pm2_5, na.rm = TRUE)
+jan_pm10 <- mean(jan$pm10, na.rm = TRUE)
+feb_pm1 <- mean(feb$pm1, na.rm = TRUE)
+feb_pm2_5 <- mean(feb$pm2_5, na.rm = TRUE)
+feb_pm10 <- mean(feb$pm10, na.rm = TRUE)
+df <- data.frame(
+  Category = c("Dec", "Jan", "Feb"),
+  pm1 = c(dec_pm1, jan_pm1, feb_pm1),
+  pm2_5 = c(dec_pm2_5, jan_pm2_5, feb_pm2_5),
+  pm3 = c(dec_pm10, jan_pm10, feb_pm10)
+)
+df_long <- pivot_longer(df, cols = starts_with("pm"), names_to = "pm", values_to = "Value")
+order <- c("Dec", "Jan", "Feb")
+df_long |>
+  mutate(Category = factor(Category, levels = order)) |>
+  ggplot(aes(x = Category, y = Value, fill = pm)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Average air pollution in Yerevan in winter according to different particles",
+       x = "Month",
+       y = NULL, fill = "Pm") +
+  theme_minimal()
+```
+
+In December pm1 is a little bit above of 50, which is considered as moderate, though its remaining values are good.
+
+In all 3 months of winter values of pm2_5 are above 56, which is considered as unhealthy.
+
+In all 3 months of winter values of pm10 are above 54, which is considered as moderate.
+
+Below are description of pm1, pm2_5, pm10 for better understanding
+
+PM1
+
+These particles are so small they can bypass the body's natural defenses and penetrate deep into the lungs and bloodstream.
+They can cause respiratory problems, heart disease, and even cancer.
+Children and people with existing respiratory conditions are particularly vulnerable to the harmful effects of PM1.0.
+
+PM2_5
+
+These particles are also small enough to cause respiratory problems, but their larger size prevents them from reaching the deepest parts of the lungs.
+However, they can still irritate the airways and trigger asthma attacks.
+PM2.5 exposure has also been linked to an increased risk of cardiovascular disease.
+
+PM10
+
+These particles are larger and less likely to be inhaled deeply.
+However, they can still irritate the eyes, nose, and throat.
+Long-term exposure to PM10 can also lead to respiratory problems and heart disease.
+
+```{r}
+main_data |>
+  drop_na(humidity) |>
+  ggplot(aes(x = humidity)) +
+  geom_histogram(fill = "#69b3a2", color = "#e9ecef", alpha = 0.5, binwidth = 2) +
+  labs(title = "Humidity levels in winter in Yerevan",
+       x = "Humidity percentage",
+       y = NULL)
+```
+
+Mostly humidity % is above 60, which is normal for winter in Yerevan.

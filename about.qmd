@@ -2,4 +2,5 @@
 title: "About"
 ---
 
-Anna Davtyan
+Hi, my name is Anna Davtyan, I'm 19 years old and I study at Yerevan State University in the faculty of Informatics and Applied Mathematics.
+I do love programming and I imagine my future in that field
